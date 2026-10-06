@@ -21,6 +21,7 @@
     --tijolo:#B04B32;
     --linha:#E7DFCF;
     --sombra: 0 10px 30px -12px rgba(23,50,41,0.25);
+    --maxw:1080px;
   }
 
   *{ box-sizing:border-box; }
@@ -46,7 +47,7 @@
     overflow:hidden;
   }
   .hero-inner{
-    max-width:1080px;
+    max-width:var(--maxw);
     margin:0 auto;
     position:relative;
     z-index:2;
@@ -129,7 +130,7 @@
 
   /* ---------- TABS ---------- */
   .tabs-wrap{
-    max-width:1080px;
+    max-width:var(--maxw);
     margin:-34px auto 0;
     padding:0 24px;
     position:relative;
@@ -163,7 +164,7 @@
   }
   .tab-btn:not(.active):hover{ color:var(--verde-escuro); background:var(--creme); }
 
-  main{ max-width:1080px; margin:0 auto; padding:40px 24px 100px; }
+  main{ max-width:var(--maxw); margin:0 auto; padding:40px 24px 100px; }
   .view{ display:none; animation: rise .35s ease; }
   .view.active{ display:block; }
   @keyframes rise{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
@@ -447,6 +448,74 @@
     color:var(--verde-medio);
   }
 
+
+  /* ---------- MONITORES (desktop / Full HD / 2K / 4K / TV) ---------- */
+  @media (min-width:1280px){
+    :root{ --maxw:1240px; }
+    .houses-grid{ grid-template-columns:repeat(auto-fill, minmax(360px, 1fr)); }
+    .form-card{ grid-template-columns:repeat(3, 1fr); }
+    .form-card .field.full{ grid-column:auto; }
+    .hero p.sub{ max-width:640px; }
+  }
+  @media (min-width:1600px){
+    :root{ --maxw:1560px; }
+    .hero{ padding:72px 40px 104px; background-image:
+      linear-gradient(180deg, rgba(9,24,17,0.62) 0%, rgba(9,22,16,0.72) 55%, rgba(9,20,15,0.86) 100%),
+      url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2560&q=80'); }
+    .tabs-wrap, main{ padding-left:40px; padding-right:40px; }
+    .houses-grid{ grid-template-columns:repeat(auto-fill, minmax(400px, 1fr)); gap:26px; }
+    .branch{ width:460px; }
+  }
+  @media (min-width:1920px){
+    :root{ --maxw:1800px; }
+    html{ zoom:1.1; }
+  }
+  @media (min-width:2400px){
+    :root{ --maxw:2000px; }
+    html{ zoom:1.35; }
+  }
+  @media (min-width:3200px){
+    :root{ --maxw:2200px; }
+    html{ zoom:1.9; }
+  }
+  /* animação das pétalas acompanha a altura do hero em telas grandes */
+  @media (min-width:1600px){
+    @keyframes fall{
+      0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+      10%{ opacity:.6; }
+      90%{ opacity:.5; }
+      100%{ transform: translateY(820px) translateX(60px) rotate(220deg); opacity:0; }
+    }
+  }
+
+.tool-btn{
+    display:flex; align-items:center; gap:8px;
+    background:var(--creme-card); color:var(--verde-escuro);
+    border:1.6px solid var(--linha); border-radius:12px;
+    padding:12px 16px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px;
+    cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .tool-btn:hover{ background:#F2EEE3; border-color:var(--dourado); }
+  .tool-btn svg{ width:16px; height:16px; }
+  .dup-badge{
+    display:inline-block; margin-left:6px; padding:2px 7px; border-radius:20px;
+    background:#F6E9E4; color:var(--tijolo); font-size:10.5px; font-weight:800;
+    letter-spacing:.04em; text-transform:uppercase; vertical-align:middle;
+  }
+  .plate-card.dup{ border-color:var(--tijolo); }
+
+  @media print{
+    .hero, .tabs-wrap, .search-row, .toast, .card-actions, footer .signature, #view-cadastro{ display:none !important; }
+    body{ background:#fff; zoom:1 !important; }
+    html{ zoom:1 !important; }
+    main{ max-width:none; padding:0; }
+    #view-consulta{ display:block !important; animation:none; }
+    .houses-grid{ grid-template-columns:repeat(2,1fr); gap:12px; }
+    .house-card{ break-inside:avoid; box-shadow:none; }
+    .house-head{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .plate-card:hover{ transform:none; box-shadow:none; }
+  }
+
   @media (max-width:640px){
     .form-card{ grid-template-columns:1fr; padding:24px; }
     .hero{ padding:44px 18px 70px; }
@@ -503,6 +572,15 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         <input type="text" id="searchInput" placeholder="Buscar por placa, morador ou modelo...">
       </div>
+      <button type="button" class="tool-btn" onclick="exportCSV()" title="Planilha para abrir no Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Exportar Excel</button>
+      <button type="button" class="tool-btn" onclick="exportJSON()" title="Cópia de segurança completa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>Backup</button>
+      <button type="button" class="tool-btn" onclick="document.getElementById('importFile').click()" title="Restaurar um backup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0L8 7m4-4l4 4M4 21h16"/></svg>Restaurar</button>
+      <button type="button" class="tool-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>Imprimir</button>
+      <input type="file" id="importFile" accept=".json,application/json" style="display:none">
     </div>
     <div class="houses-grid" id="housesGrid"></div>
     <div class="no-results" id="noResults" style="display:none;">
@@ -645,6 +723,7 @@ function renderHouses(filter=''){
       .map((v, idx) => ({v, idx}))
       .filter(({v}) => !f ||
           v.placa.toLowerCase().includes(f) ||
+          normPlaca(v.placa).includes(normPlaca(f)) && normPlaca(f) ||
           (v.morador||'').toLowerCase().includes(f) ||
           (v.modelo||'').toLowerCase().includes(f) ||
           (v.cor||'').toLowerCase().includes(f));
@@ -708,13 +787,13 @@ function plateCardHtml(houseId, v, idx){
   }
 
   return `
-    <div class="plate-card">
+    <div class="plate-card${isDuplicated(v.placa)?' dup':''}">
       <div class="plate">
         <div class="bar"></div>
         <div class="num">${escapeHtml(v.placa)}</div>
       </div>
       <div class="plate-info">
-        <div class="morador">${escapeHtml(v.morador || '—')}</div>
+        <div class="morador">${escapeHtml(v.morador || '—')}${isDuplicated(v.placa)?'<span class="dup-badge" title="Esta placa aparece mais de uma vez">repetida</span>':''}</div>
         <div class="modelo">${escapeHtml(v.modelo || '')}${v.cor ? ' · ' + escapeHtml(v.cor) : ''}</div>
       </div>
       <div class="card-actions">
@@ -726,6 +805,32 @@ function plateCardHtml(houseId, v, idx){
         </button>
       </div>
     </div>`;
+}
+
+/* ---------- Placas: normalização e duplicidade ---------- */
+function normPlaca(p){ return String(p||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+// retorna {house, v} de outra ocorrência da mesma placa (ignorando o próprio registro)
+function findDuplicate(placa, ignoreHouseId=null, ignoreIdx=null){
+  const n = normPlaca(placa);
+  for(const h of data){
+    for(let i=0;i<h.veiculos.length;i++){
+      if(h.id===ignoreHouseId && i===ignoreIdx) continue;
+      if(normPlaca(h.veiculos[i].placa)===n) return {house:h, v:h.veiculos[i]};
+    }
+  }
+  return null;
+}
+function isDuplicated(placa){
+  const n = normPlaca(placa); let c = 0;
+  for(const h of data) for(const v of h.veiculos) if(normPlaca(v.placa)===n) c++;
+  return c>1;
+}
+function confirmDuplicate(placa, ignoreHouseId=null, ignoreIdx=null){
+  const d = findDuplicate(placa, ignoreHouseId, ignoreIdx);
+  if(!d) return true;
+  return confirm(`A placa ${placa} já está cadastrada na ${d.house.nome}`+
+    (d.v.morador && d.v.morador!=='—' ? ` (${d.v.morador})` : '')+`.\n\nCadastrar mesmo assim?`);
 }
 
 function escapeHtml(str){
@@ -748,7 +853,7 @@ function saveEdit(houseId, idx){
   if(!house || !house.veiculos[idx]) return;
   const key = `${houseId}_${idx}`;
 
-  const placa = document.getElementById(`e_placa_${key}`).value.trim().toUpperCase();
+  const placa = normPlaca(document.getElementById(`e_placa_${key}`).value.trim().toUpperCase());
   const morador = document.getElementById(`e_morador_${key}`).value.trim();
   const modelo = document.getElementById(`e_modelo_${key}`).value.trim();
   const cor = document.getElementById(`e_cor_${key}`).value.trim();
@@ -757,6 +862,8 @@ function saveEdit(houseId, idx){
     showToast('Preencha ao menos a placa e o modelo.');
     return;
   }
+
+  if(!confirmDuplicate(placa, houseId, idx)) return;
 
   house.veiculos[idx] = {placa, morador, modelo, cor};
   editingKey = null;
@@ -769,6 +876,8 @@ function removeVeiculo(houseId, idx){
   const house = data.find(h=>h.id===houseId);
   if(!house) return;
   if(idx>-1 && house.veiculos[idx]){
+    const v = house.veiculos[idx];
+    if(!confirm(`Remover o veículo ${v.placa} (${v.modelo||'sem modelo'}) da ${house.nome}?`)) return;
     house.veiculos.splice(idx,1);
     saveData(data);
     renderAll();
@@ -790,7 +899,7 @@ document.getElementById('searchInput').addEventListener('input', e=>{
 document.getElementById('vehicleForm').addEventListener('submit', e=>{
   e.preventDefault();
   const casaId = parseInt(document.getElementById('fCasa').value, 10);
-  const placa = document.getElementById('fPlaca').value.trim().toUpperCase();
+  const placa = normPlaca(document.getElementById('fPlaca').value.trim().toUpperCase());
   const morador = document.getElementById('fMorador').value.trim();
   const modelo = document.getElementById('fModelo').value.trim();
   const cor = document.getElementById('fCor').value.trim();
@@ -800,12 +909,64 @@ document.getElementById('vehicleForm').addEventListener('submit', e=>{
   const house = data.find(h=>h.id===casaId);
   if(!house) return;
 
+  if(!confirmDuplicate(placa)) return;
+
   house.veiculos.push({placa, morador, modelo, cor});
   saveData(data);
   renderAll();
   showToast(`${placa} cadastrado em ${house.nome}!`);
   e.target.reset();
   document.getElementById('fCasa').value = casaId;
+});
+
+/* ---------- Exportar / Backup / Restaurar ---------- */
+function downloadFile(name, content, type){
+  const blob = new Blob([content], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+function stamp(){ return new Date().toISOString().slice(0,10); }
+
+function exportCSV(){
+  const q = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const rows = [['Casa','Placa','Morador','Modelo','Cor']];
+  data.forEach(h=>h.veiculos.forEach(v=>rows.push([h.nome, v.placa, v.morador||'', v.modelo||'', v.cor||''])));
+  // separador ";" e BOM para o Excel em português abrir com acentos corretos
+  const csv = '\ufeff' + rows.map(r=>r.map(q).join(';')).join('\r\n');
+  downloadFile(`veiculos-vila-sibipiruna-${stamp()}.csv`, csv, 'text/csv;charset=utf-8');
+  showToast('Planilha exportada!');
+}
+function exportJSON(){
+  downloadFile(`backup-vila-sibipiruna-${stamp()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  showToast('Backup salvo!');
+}
+document.getElementById('importFile').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      const ok = Array.isArray(parsed) && parsed.every(h =>
+        h && typeof h.id==='number' && typeof h.nome==='string' && Array.isArray(h.veiculos) &&
+        h.veiculos.every(v => v && typeof v.placa==='string'));
+      if(!ok) throw new Error('formato');
+      const total = parsed.reduce((s,h)=>s+h.veiculos.length,0);
+      if(!confirm(`Restaurar backup com ${parsed.length} casas e ${total} veículos?\n\nIsso SUBSTITUI todos os dados atuais.`)) return;
+      data = parsed;
+      editingKey = null;
+      saveData(data);
+      renderAll();
+      showToast('Backup restaurado!');
+    }catch(err){
+      alert('Arquivo inválido. Use um arquivo de backup (.json) gerado por este site.');
+    }
+  };
+  reader.readAsText(file);
 });
 
 let toastTimer;
