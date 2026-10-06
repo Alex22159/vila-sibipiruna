@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vila Sibipiruna · Cadastro de Veículos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde-escuro:#173229;
+    --verde-medio:#2E5A45;
+    --verde-claro:#4C7C63;
+    --dourado:#E7B44C;
+    --dourado-suave:#F3D48A;
+    --creme:#FBF6EC;
+    --creme-card:#FFFFFF;
+    --carvao:#211F1B;
+    --cinza-texto:#726B5E;
+    --tijolo:#B04B32;
+    --linha:#E7DFCF;
+    --sombra: 0 10px 30px -12px rgba(23,50,41,0.25);
+    --maxw:1080px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--creme);
+    color:var(--carvao);
+    font-family:'Manrope', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{ font-family:'Fraunces', serif; margin:0; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:
+      linear-gradient(180deg, rgba(9,24,17,0.62) 0%, rgba(9,22,16,0.72) 55%, rgba(9,20,15,0.86) 100%),
+      url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1800&q=80') center 35% / cover no-repeat;
+    color:var(--creme);
+    padding: 56px 24px 84px;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--dourado-suave);
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .eyebrow svg{ width:16px; height:16px; }
+  .hero h1{
+    font-size:clamp(34px, 5.4vw, 56px);
+    line-height:1.02;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 span{ color:var(--dourado); font-style:italic; font-weight:600; }
+  .hero p.sub{
+    margin-top:16px;
+    max-width:520px;
+    font-size:16.5px;
+    line-height:1.55;
+    color:#D9E4DC;
+  }
+  .stat-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:36px;
+  }
+  .stat-pill{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(231,180,76,0.35);
+    backdrop-filter: blur(6px);
+    border-radius:14px;
+    padding:14px 20px;
+    min-width:128px;
+  }
+  .stat-pill .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:26px;
+    font-weight:700;
+    color:var(--dourado);
+    line-height:1;
+  }
+  .stat-pill .lbl{
+    margin-top:6px;
+    font-size:12px;
+    color:#C9D6CD;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  /* falling sibipiruna blossoms */
+  .petals{ position:absolute; inset:0; z-index:1; pointer-events:none; }
+  .petal{
+    position:absolute;
+    top:-10%;
+    width:9px; height:9px;
+    background: var(--dourado);
+    border-radius: 2px 8px 2px 8px;
+    opacity:0.55;
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.6; }
+    90%{ opacity:.5; }
+    100%{ transform: translateY(620px) translateX(40px) rotate(220deg); opacity:0; }
+  }
+
+  /* branch decoration */
+  .branch{ position:absolute; top:-30px; right:-40px; width:340px; opacity:0.5; z-index:1; }
+
+  /* ---------- TABS ---------- */
+  .tabs-wrap{
+    max-width:var(--maxw);
+    margin:-34px auto 0;
+    padding:0 24px;
+    position:relative;
+    z-index:3;
+  }
+  .tabs{
+    display:inline-flex;
+    background:var(--creme-card);
+    border-radius:16px;
+    box-shadow:var(--sombra);
+    padding:6px;
+    gap:4px;
+  }
+  .tab-btn{
+    border:none;
+    background:transparent;
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--cinza-texto);
+    padding:12px 22px;
+    border-radius:11px;
+    cursor:pointer;
+    transition: all .2s ease;
+    display:flex; align-items:center; gap:8px;
+  }
+  .tab-btn svg{ width:17px; height:17px; }
+  .tab-btn.active{
+    background:var(--verde-escuro);
+    color:var(--dourado-suave);
+  }
+  .tab-btn:not(.active):hover{ color:var(--verde-escuro); background:var(--creme); }
+
+  main{ max-width:var(--maxw); margin:0 auto; padding:40px 24px 100px; }
+  .view{ display:none; animation: rise .35s ease; }
+  .view.active{ display:block; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- CADASTRO ---------- */
+  .form-card{
+    background:var(--creme-card);
+    border-radius:22px;
+    box-shadow:var(--sombra);
+    padding:36px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:22px;
+    border:1px solid var(--linha);
+  }
+  .form-card h2{ grid-column:1/-1; font-size:24px; color:var(--verde-escuro); margin-bottom:-6px;}
+  .form-card p.hint{ grid-column:1/-1; color:var(--cinza-texto); font-size:14px; margin-top:-14px; margin-bottom:6px;}
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:12.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--verde-medio); }
+  .field input, .field select{
+    border:1.6px solid var(--linha);
+    border-radius:11px;
+    padding:13px 14px;
+    font-size:15px;
+    font-family:'Manrope', sans-serif;
+    background:#FCFAF4;
+    color:var(--carvao);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .field input:focus, .field select:focus{
+    outline:none;
+    border-color:var(--dourado);
+    background:#fff;
+  }
+  .field input.placa{ font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:.05em; font-weight:700;}
+  .submit-btn{
+    grid-column:1/-1;
+    justify-self:start;
+    background:var(--verde-escuro);
+    color:var(--dourado-suave);
+    border:none;
+    padding:15px 30px;
+    border-radius:12px;
+    font-weight:800;
+    font-size:15px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition: transform .15s ease, background .15s ease;
+    margin-top:6px;
+  }
+  .submit-btn:hover{ background:#0F251C; transform:translateY(-1px); }
+  .submit-btn svg{ width:18px; height:18px; }
+
+  /* toast */
+  .toast{
+    position:fixed;
+    bottom:28px; left:50%;
+    transform: translateX(-50%) translateY(20px);
+    background:var(--verde-escuro);
+    color:var(--dourado-suave);
+    padding:14px 22px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.25);
+    display:flex; align-items:center; gap:10px;
+    opacity:0;
+    pointer-events:none;
+    transition: all .3s ease;
+    z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- CONSULTA ---------- */
+  .search-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .search-box{
+    flex:1;
+    min-width:240px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--creme-card);
+    border:1.6px solid var(--linha);
+    border-radius:12px;
+    padding:12px 16px;
+  }
+  .search-box svg{ width:18px; height:18px; color:var(--verde-medio); flex-shrink:0;}
+  .search-box input{
+    border:none; outline:none; background:transparent;
+    font-family:'Manrope'; font-size:15px; width:100%; color:var(--carvao);
+  }
+
+  .houses-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:22px;
+  }
+  .house-card{
+    background:var(--creme-card);
+    border-radius:20px;
+    border:1px solid var(--linha);
+    box-shadow:var(--sombra);
+    overflow:hidden;
+    transition: opacity .2s ease;
+  }
+  .house-card.hidden{ display:none; }
+  .house-head{
+    background:var(--verde-escuro);
+    color:var(--creme);
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .house-head .name{ font-family:'Fraunces', serif; font-size:19px; font-weight:600; display:flex; align-items:center; gap:10px; }
+  .house-badge{
+    width:30px; height:30px;
+    border-radius:9px;
+    background:var(--dourado);
+    color:var(--verde-escuro);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .house-count{
+    font-size:12px;
+    background:rgba(255,255,255,0.1);
+    padding:5px 10px;
+    border-radius:20px;
+    font-weight:700;
+    color:var(--dourado-suave);
+  }
+  .house-body{ padding:18px; display:flex; flex-direction:column; gap:12px; }
+
+  .plate-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px;
+    border-radius:14px;
+    background:#FBF9F3;
+    border:1px solid var(--linha);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .plate-card:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(23,50,41,0.1); }
+
+  .plate{
+    flex-shrink:0;
+    width:124px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1.5px solid #C9C9C9;
+    background:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,0.12);
+  }
+  .plate .bar{
+    background: linear-gradient(90deg,#1C4CA8,#2563C9);
+    height:8px;
+  }
+  .plate .num{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:19px;
+    text-align:center;
+    padding:8px 2px 10px;
+    letter-spacing:.02em;
+    color:#161616;
+  }
+
+  .plate-info{ flex:1; min-width:0; }
+  .plate-info .morador{ font-weight:700; font-size:14.5px; color:var(--verde-escuro); }
+  .plate-info .modelo{ font-size:13px; color:var(--cinza-texto); margin-top:2px; }
+
+  .card-actions{ display:flex; align-items:center; gap:2px; flex-shrink:0; }
+
+  .del-btn, .edit-btn{
+    border:none;
+    background:transparent;
+    color:#C6C0B2;
+    cursor:pointer;
+    padding:6px;
+    border-radius:8px;
+    transition: color .15s ease, background .15s ease;
+    flex-shrink:0;
+  }
+  .del-btn:hover{ color:var(--tijolo); background:#F6E9E4; }
+  .del-btn svg{ width:17px; height:17px; }
+  .edit-btn:hover{ color:var(--verde-escuro); background:#E9F1EC; }
+  .edit-btn svg{ width:17px; height:17px; }
+
+  /* ---------- Inline edit mode ---------- */
+  .plate-card.editing{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    background:#FFFDF6;
+    border-color:var(--dourado);
+    box-shadow:0 6px 16px rgba(231,180,76,0.18);
+  }
+  .edit-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .edit-grid .full{ grid-column:1/-1; }
+  .edit-field label{
+    display:block;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--verde-medio);
+    margin-bottom:4px;
+  }
+  .edit-input{
+    width:100%;
+    border:1.4px solid var(--linha);
+    border-radius:8px;
+    padding:9px 10px;
+    font-family:'Manrope', sans-serif;
+    font-size:13.5px;
+    background:#fff;
+    color:var(--carvao);
+  }
+  .edit-input:focus{ outline:none; border-color:var(--dourado); }
+  .edit-input.mono{ font-family:'JetBrains Mono', monospace; text-transform:uppercase; font-weight:700; letter-spacing:.03em; }
+  .edit-actions{ display:flex; gap:8px; justify-content:flex-end; }
+  .btn-save, .btn-cancel{
+    border-radius:9px;
+    padding:9px 16px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition: transform .15s ease, background .15s ease;
+  }
+  .btn-save{ background:var(--verde-escuro); color:var(--dourado-suave); border:none; }
+  .btn-save:hover{ background:#0F251C; }
+  .btn-cancel{ background:transparent; color:var(--cinza-texto); border:1.4px solid var(--linha); }
+  .btn-cancel:hover{ background:#F2EEE3; }
+  .btn-save svg, .btn-cancel svg{ width:15px; height:15px; }
+
+  .empty-house{
+    border:1.5px dashed var(--linha);
+    border-radius:12px;
+    padding:20px 14px;
+    text-align:center;
+    color:var(--cinza-texto);
+    font-size:13.5px;
+  }
+  .empty-house b{ color:var(--verde-medio); display:block; font-size:14px; margin-bottom:2px; }
+
+  .no-results{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--cinza-texto);
+  }
+  .no-results svg{ width:44px; height:44px; color:var(--linha); margin-bottom:10px;}
+
+  footer{
+    text-align:center;
+    padding:26px;
+    font-size:12.5px;
+    color:var(--cinza-texto);
+    border-top:1px solid var(--linha);
+  }
+  footer .signature{
+    display:block;
+    margin-top:8px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:15px;
+    color:var(--verde-medio);
+  }
+
+
+  /* ---------- MONITORES (desktop / Full HD / 2K / 4K / TV) ---------- */
+  @media (min-width:1280px){
+    :root{ --maxw:1240px; }
+    .houses-grid{ grid-template-columns:repeat(auto-fill, minmax(360px, 1fr)); }
+    .form-card{ grid-template-columns:repeat(3, 1fr); }
+    .form-card .field.full{ grid-column:auto; }
+    .hero p.sub{ max-width:640px; }
+  }
+  @media (min-width:1600px){
+    :root{ --maxw:1560px; }
+    .hero{ padding:72px 40px 104px; background-image:
+      linear-gradient(180deg, rgba(9,24,17,0.62) 0%, rgba(9,22,16,0.72) 55%, rgba(9,20,15,0.86) 100%),
+      url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2560&q=80'); }
+    .tabs-wrap, main{ padding-left:40px; padding-right:40px; }
+    .houses-grid{ grid-template-columns:repeat(auto-fill, minmax(400px, 1fr)); gap:26px; }
+    .branch{ width:460px; }
+  }
+  @media (min-width:1920px){
+    :root{ --maxw:1800px; }
+    html{ zoom:1.1; }
+  }
+  @media (min-width:2400px){
+    :root{ --maxw:2000px; }
+    html{ zoom:1.35; }
+  }
+  @media (min-width:3200px){
+    :root{ --maxw:2200px; }
+    html{ zoom:1.9; }
+  }
+  /* animação das pétalas acompanha a altura do hero em telas grandes */
+  @media (min-width:1600px){
+    @keyframes fall{
+      0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+      10%{ opacity:.6; }
+      90%{ opacity:.5; }
+      100%{ transform: translateY(820px) translateX(60px) rotate(220deg); opacity:0; }
+    }
+  }
+
+.tool-btn{
+    display:flex; align-items:center; gap:8px;
+    background:var(--creme-card); color:var(--verde-escuro);
+    border:1.6px solid var(--linha); border-radius:12px;
+    padding:12px 16px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px;
+    cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .tool-btn:hover{ background:#F2EEE3; border-color:var(--dourado); }
+  .tool-btn svg{ width:16px; height:16px; }
+  .dup-badge{
+    display:inline-block; margin-left:6px; padding:2px 7px; border-radius:20px;
+    background:#F6E9E4; color:var(--tijolo); font-size:10.5px; font-weight:800;
+    letter-spacing:.04em; text-transform:uppercase; vertical-align:middle;
+  }
+  .plate-card.dup{ border-color:var(--tijolo); }
+
+  @media print{
+    .hero, .tabs-wrap, .search-row, .toast, .card-actions, footer .signature, #view-cadastro{ display:none !important; }
+    body{ background:#fff; zoom:1 !important; }
+    html{ zoom:1 !important; }
+    main{ max-width:none; padding:0; }
+    #view-consulta{ display:block !important; animation:none; }
+    .houses-grid{ grid-template-columns:repeat(2,1fr); gap:12px; }
+    .house-card{ break-inside:avoid; box-shadow:none; }
+    .house-head{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .plate-card:hover{ transform:none; box-shadow:none; }
+  }
+
+  @media (max-width:640px){
+    .form-card{ grid-template-columns:1fr; padding:24px; }
+    .hero{ padding:44px 18px 70px; }
+    .branch{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="petals" id="petals"></div>
+  <svg class="branch" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 20 C 90 60, 160 40, 330 100" stroke="#3F6E56" stroke-width="3" fill="none" opacity="0.6"/>
+    <g fill="#E7B44C" opacity="0.85">
+      <circle cx="60" cy="34" r="6"/><circle cx="90" cy="46" r="5"/><circle cx="140" cy="40" r="6"/>
+      <circle cx="180" cy="58" r="5"/><circle cx="230" cy="72" r="6"/><circle cx="280" cy="86" r="5"/>
+      <circle cx="310" cy="98" r="6"/>
+    </g>
+  </svg>
+  <div class="hero-inner">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M5 8l3 2M19 8l-3 2M4 14h16l-1.5 6h-13L4 14z"/><circle cx="8" cy="14" r="1.6" fill="currentColor"/><circle cx="16" cy="14" r="1.6" fill="currentColor"/></svg>
+      Portaria digital
+    </div>
+    <h1>Vila <span>Sibipiruna</span><br>Cadastro de Veículos</h1>
+    <p class="sub">Registre e consulte os veículos de cada casa do condomínio em um só lugar — simples para a portaria, claro para os moradores.</p>
+    <div class="stat-row">
+      <div class="stat-pill"><div class="num" id="statTotal">0</div><div class="lbl">Veículos</div></div>
+      <div class="stat-pill"><div class="num" id="statCasas">0</div><div class="lbl">Casas com veículo</div></div>
+      <div class="stat-pill"><div class="num" id="statVazias">0</div><div class="lbl">Casas sem cadastro</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="consulta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Consultar veículos
+    </button>
+    <button class="tab-btn" data-tab="cadastro">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Cadastrar veículo
+    </button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===== CONSULTA ===== -->
+  <section class="view active" id="view-consulta">
+    <div class="search-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por placa, morador ou modelo...">
+      </div>
+      <button type="button" class="tool-btn" onclick="exportCSV()" title="Planilha para abrir no Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Exportar Excel</button>
+      <button type="button" class="tool-btn" onclick="exportJSON()" title="Cópia de segurança completa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>Backup</button>
+      <button type="button" class="tool-btn" onclick="document.getElementById('importFile').click()" title="Restaurar um backup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0L8 7m4-4l4 4M4 21h16"/></svg>Restaurar</button>
+      <button type="button" class="tool-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>Imprimir</button>
+      <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+    </div>
+    <div class="houses-grid" id="housesGrid"></div>
+    <div class="no-results" id="noResults" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div>Nenhum veículo encontrado para essa busca.</div>
+    </div>
+  </section>
+
+  <!-- ===== CADASTRO ===== -->
+  <section class="view" id="view-cadastro">
+    <form class="form-card" id="vehicleForm">
+      <h2>Novo veículo</h2>
+      <p class="hint">Preencha os dados abaixo para adicionar um veículo à casa selecionada.</p>
+
+      <div class="field">
+        <label for="fCasa">Casa</label>
+        <select id="fCasa" required></select>
+      </div>
+      <div class="field">
+        <label for="fPlaca">Placa</label>
+        <input type="text" id="fPlaca" class="placa" placeholder="ABC1D23" required maxlength="8">
+      </div>
+      <div class="field">
+        <label for="fMorador">Morador</label>
+        <input type="text" id="fMorador" placeholder="Nome do morador">
+      </div>
+      <div class="field">
+        <label for="fModelo">Modelo</label>
+        <input type="text" id="fModelo" placeholder="Ex: Volvo XC60" required>
+      </div>
+      <div class="field full">
+        <label for="fCor">Cor</label>
+        <input type="text" id="fCor" placeholder="Ex: Preto">
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Cadastrar veículo
+      </button>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  Vila Sibipiruna · Cadastro de Veículos dos Moradores — dados salvos neste navegador
+  <span class="signature">By Alex ;-)</span>
+</footer>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastMsg">Veículo cadastrado!</span>
+</div>
+
+<script>
+const STORAGE_KEY = 'vilaSibipirunaVeiculos_v1';
+
+const seedData = [
+  {id:1, nome:'Casa 01', veiculos:[
+    {placa:'TLJ1B07', morador:'Camila', modelo:'Volvo', cor:'Branco'},
+    {placa:'CXM3T67', morador:'Camila', modelo:'Volvo', cor:'Cinza'},
+    {placa:'TIS6C14', morador:'Adriano', modelo:'BYD', cor:'Cinza'},
+    {placa:'UPB9I11', morador:'Adriano', modelo:'Porsche 911', cor:'Bege'},
+  ]},
+  {id:2, nome:'Casa 02', veiculos:[
+    {placa:'STS0D32', morador:'Taide', modelo:'Lexus', cor:'Preto'},
+    {placa:'TJX3A14', morador:'Jonas', modelo:'Jeep Compass', cor:'Cinza'},
+    {placa:'BKR4I63', morador:'Filha', modelo:'Volvo', cor:'Preto'},
+    {placa:'SVK0D33', morador:'Motorista', modelo:'Corolla', cor:'Cinza'},
+    {placa:'SWQ5E72', morador:'Filha', modelo:'Volvo', cor:'Azul'},
+    {placa:'UEI0E34', morador:'—', modelo:'Spin', cor:'Branca'},
+  ]},
+  {id:3, nome:'Casa 03', veiculos:[
+    {placa:'LTI2408', morador:'Bruno', modelo:'SW4', cor:'Preto'},
+    {placa:'FPX8C05', morador:'Bruno', modelo:'BMW', cor:'Preto'},
+    {placa:'BKR4I63', morador:'Mãe', modelo:'Volvo', cor:'Preto'},
+    {placa:'UGO6F30', morador:'—', modelo:'Volvo', cor:'Preto'},
+  ]},
+  {id:4, nome:'Casa 04', veiculos:[]},
+  {id:5, nome:'Casa 05', veiculos:[
+    {placa:'EMC3H22', morador:'—', modelo:'Volvo XC60', cor:'Azul'},
+    {placa:'GAI1F47', morador:'—', modelo:'BMW 320', cor:'Branca'},
+  ]},
+  {id:6, nome:'Casa 06', veiculos:[
+    {placa:'SUQ-9F78', morador:'—', modelo:'Tiguan', cor:'Prata'},
+    {placa:'TJU-3F65', morador:'—', modelo:'Nivus', cor:'Azul'},
+  ]},
+];
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  saveData(seedData);
+  return JSON.parse(JSON.stringify(seedData));
+}
+function saveData(d){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }catch(e){}
+}
+
+let data = loadData();
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- Populate casa select ---------- */
+function fillCasaSelect(){
+  const sel = document.getElementById('fCasa');
+  sel.innerHTML = data.map(h=>`<option value="${h.id}">${h.nome}</option>`).join('');
+}
+
+/* ---------- Stats ---------- */
+function renderStats(){
+  const total = data.reduce((s,h)=>s+h.veiculos.length,0);
+  const comVeiculo = data.filter(h=>h.veiculos.length>0).length;
+  const semVeiculo = data.length - comVeiculo;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statCasas').textContent = comVeiculo;
+  document.getElementById('statVazias').textContent = semVeiculo;
+}
+
+/* ---------- Render houses grid ---------- */
+let editingKey = null; // "houseId_index" of the vehicle currently being edited, or null
+
+function renderHouses(filter=''){
+  const grid = document.getElementById('housesGrid');
+  const f = filter.trim().toLowerCase();
+  let anyVisible = false;
+
+  grid.innerHTML = data.map(house=>{
+    const entries = house.veiculos
+      .map((v, idx) => ({v, idx}))
+      .filter(({v}) => !f ||
+          v.placa.toLowerCase().includes(f) ||
+          normPlaca(v.placa).includes(normPlaca(f)) && normPlaca(f) ||
+          (v.morador||'').toLowerCase().includes(f) ||
+          (v.modelo||'').toLowerCase().includes(f) ||
+          (v.cor||'').toLowerCase().includes(f));
+
+    if(f && entries.length === 0) return '';
+    anyVisible = true;
+
+    const num = String(house.id).padStart(2,'0');
+    const body = entries.length
+      ? entries.map(({v, idx}) => plateCardHtml(house.id, v, idx)).join('')
+      : `<div class="empty-house"><b>Sem veículos</b>Nenhum veículo cadastrado para esta casa ainda.</div>`;
+
+    return `
+      <div class="house-card">
+        <div class="house-head">
+          <div class="name"><span class="house-badge">${num}</span>${house.nome}</div>
+          <div class="house-count">${house.veiculos.length} ${house.veiculos.length===1?'veículo':'veículos'}</div>
+        </div>
+        <div class="house-body">${body}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('noResults').style.display = (f && !anyVisible) ? 'block' : 'none';
+}
+
+function plateCardHtml(houseId, v, idx){
+  const key = `${houseId}_${idx}`;
+
+  if(editingKey === key){
+    return `
+    <div class="plate-card editing">
+      <div class="edit-grid">
+        <div class="edit-field">
+          <label>Placa</label>
+          <input type="text" id="e_placa_${key}" class="edit-input mono" value="${escapeAttr(v.placa)}" maxlength="8">
+        </div>
+        <div class="edit-field">
+          <label>Morador</label>
+          <input type="text" id="e_morador_${key}" class="edit-input" value="${escapeAttr(v.morador||'')}" placeholder="Morador">
+        </div>
+        <div class="edit-field">
+          <label>Modelo</label>
+          <input type="text" id="e_modelo_${key}" class="edit-input" value="${escapeAttr(v.modelo||'')}" placeholder="Modelo">
+        </div>
+        <div class="edit-field">
+          <label>Cor</label>
+          <input type="text" id="e_cor_${key}" class="edit-input" value="${escapeAttr(v.cor||'')}" placeholder="Cor">
+        </div>
+      </div>
+      <div class="edit-actions">
+        <button class="btn-cancel" onclick="cancelEdit()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Cancelar
+        </button>
+        <button class="btn-save" onclick="saveEdit(${houseId}, ${idx})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          Salvar
+        </button>
+      </div>
+    </div>`;
+  }
+
+  return `
+    <div class="plate-card${isDuplicated(v.placa)?' dup':''}">
+      <div class="plate">
+        <div class="bar"></div>
+        <div class="num">${escapeHtml(v.placa)}</div>
+      </div>
+      <div class="plate-info">
+        <div class="morador">${escapeHtml(v.morador || '—')}${isDuplicated(v.placa)?'<span class="dup-badge" title="Esta placa aparece mais de uma vez">repetida</span>':''}</div>
+        <div class="modelo">${escapeHtml(v.modelo || '')}${v.cor ? ' · ' + escapeHtml(v.cor) : ''}</div>
+      </div>
+      <div class="card-actions">
+        <button class="edit-btn" title="Editar veículo" onclick="editVeiculo(${houseId}, ${idx})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="del-btn" title="Remover veículo" onclick="removeVeiculo(${houseId}, ${idx})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ---------- Placas: normalização e duplicidade ---------- */
+function normPlaca(p){ return String(p||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+// retorna {house, v} de outra ocorrência da mesma placa (ignorando o próprio registro)
+function findDuplicate(placa, ignoreHouseId=null, ignoreIdx=null){
+  const n = normPlaca(placa);
+  for(const h of data){
+    for(let i=0;i<h.veiculos.length;i++){
+      if(h.id===ignoreHouseId && i===ignoreIdx) continue;
+      if(normPlaca(h.veiculos[i].placa)===n) return {house:h, v:h.veiculos[i]};
+    }
+  }
+  return null;
+}
+function isDuplicated(placa){
+  const n = normPlaca(placa); let c = 0;
+  for(const h of data) for(const v of h.veiculos) if(normPlaca(v.placa)===n) c++;
+  return c>1;
+}
+function confirmDuplicate(placa, ignoreHouseId=null, ignoreIdx=null){
+  const d = findDuplicate(placa, ignoreHouseId, ignoreIdx);
+  if(!d) return true;
+  return confirm(`A placa ${placa} já está cadastrada na ${d.house.nome}`+
+    (d.v.morador && d.v.morador!=='—' ? ` (${d.v.morador})` : '')+`.\n\nCadastrar mesmo assim?`);
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+function editVeiculo(houseId, idx){
+  editingKey = `${houseId}_${idx}`;
+  renderHouses(document.getElementById('searchInput').value);
+}
+
+function cancelEdit(){
+  editingKey = null;
+  renderHouses(document.getElementById('searchInput').value);
+}
+
+function saveEdit(houseId, idx){
+  const house = data.find(h=>h.id===houseId);
+  if(!house || !house.veiculos[idx]) return;
+  const key = `${houseId}_${idx}`;
+
+  const placa = normPlaca(document.getElementById(`e_placa_${key}`).value.trim().toUpperCase());
+  const morador = document.getElementById(`e_morador_${key}`).value.trim();
+  const modelo = document.getElementById(`e_modelo_${key}`).value.trim();
+  const cor = document.getElementById(`e_cor_${key}`).value.trim();
+
+  if(!placa || !modelo){
+    showToast('Preencha ao menos a placa e o modelo.');
+    return;
+  }
+
+  if(!confirmDuplicate(placa, houseId, idx)) return;
+
+  house.veiculos[idx] = {placa, morador, modelo, cor};
+  editingKey = null;
+  saveData(data);
+  renderAll();
+  showToast(`${placa} atualizado!`);
+}
+
+function removeVeiculo(houseId, idx){
+  const house = data.find(h=>h.id===houseId);
+  if(!house) return;
+  if(idx>-1 && house.veiculos[idx]){
+    const v = house.veiculos[idx];
+    if(!confirm(`Remover o veículo ${v.placa} (${v.modelo||'sem modelo'}) da ${house.nome}?`)) return;
+    house.veiculos.splice(idx,1);
+    saveData(data);
+    renderAll();
+  }
+}
+
+function renderAll(){
+  renderStats();
+  fillCasaSelect();
+  renderHouses(document.getElementById('searchInput').value);
+}
+
+/* ---------- Search ---------- */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  renderHouses(e.target.value);
+});
+
+/* ---------- Form submit ---------- */
+document.getElementById('vehicleForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const casaId = parseInt(document.getElementById('fCasa').value, 10);
+  const placa = normPlaca(document.getElementById('fPlaca').value.trim().toUpperCase());
+  const morador = document.getElementById('fMorador').value.trim();
+  const modelo = document.getElementById('fModelo').value.trim();
+  const cor = document.getElementById('fCor').value.trim();
+
+  if(!placa || !modelo){ return; }
+
+  const house = data.find(h=>h.id===casaId);
+  if(!house) return;
+
+  if(!confirmDuplicate(placa)) return;
+
+  house.veiculos.push({placa, morador, modelo, cor});
+  saveData(data);
+  renderAll();
+  showToast(`${placa} cadastrado em ${house.nome}!`);
+  e.target.reset();
+  document.getElementById('fCasa').value = casaId;
+});
+
+/* ---------- Exportar / Backup / Restaurar ---------- */
+function downloadFile(name, content, type){
+  const blob = new Blob([content], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+function stamp(){ return new Date().toISOString().slice(0,10); }
+
+function exportCSV(){
+  const q = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const rows = [['Casa','Placa','Morador','Modelo','Cor']];
+  data.forEach(h=>h.veiculos.forEach(v=>rows.push([h.nome, v.placa, v.morador||'', v.modelo||'', v.cor||''])));
+  // separador ";" e BOM para o Excel em português abrir com acentos corretos
+  const csv = '\ufeff' + rows.map(r=>r.map(q).join(';')).join('\r\n');
+  downloadFile(`veiculos-vila-sibipiruna-${stamp()}.csv`, csv, 'text/csv;charset=utf-8');
+  showToast('Planilha exportada!');
+}
+function exportJSON(){
+  downloadFile(`backup-vila-sibipiruna-${stamp()}.json`, JSON.stringify(data, null, 2), 'application/json');
+  showToast('Backup salvo!');
+}
+document.getElementById('importFile').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      const ok = Array.isArray(parsed) && parsed.every(h =>
+        h && typeof h.id==='number' && typeof h.nome==='string' && Array.isArray(h.veiculos) &&
+        h.veiculos.every(v => v && typeof v.placa==='string'));
+      if(!ok) throw new Error('formato');
+      const total = parsed.reduce((s,h)=>s+h.veiculos.length,0);
+      if(!confirm(`Restaurar backup com ${parsed.length} casas e ${total} veículos?\n\nIsso SUBSTITUI todos os dados atuais.`)) return;
+      data = parsed;
+      editingKey = null;
+      saveData(data);
+      renderAll();
+      showToast('Backup restaurado!');
+    }catch(err){
+      alert('Arquivo inválido. Use um arquivo de backup (.json) gerado por este site.');
+    }
+  };
+  reader.readAsText(file);
+});
+
+let toastTimer;
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.classList.remove('show'), 2600);
+}
+
+/* ---------- Falling petals ---------- */
+(function initPetals(){
+  const wrap = document.getElementById('petals');
+  const n = 10;
+  for(let i=0;i<n;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left = (Math.random()*100) + '%';
+    p.style.animationDuration = (8 + Math.random()*8) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    p.style.width = p.style.height = (6 + Math.random()*5) + 'px';
+    wrap.appendChild(p);
+  }
+})();
+
+renderAll();
+</script>
+</body>
+</html>
